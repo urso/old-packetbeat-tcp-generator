@@ -1,10 +1,6 @@
 {
-    "name": "",
-    "email": "",
     "protocol": "",
     "module": "{{ cookiecutter.protocol|lower }}",
     "plugin_type": "{{ cookiecutter.protocol }}",
     "plugin_var": "{{ cookiecutter.plugin_type|lower }}",
-    "tcp": true,
-    "udp": false
 }
