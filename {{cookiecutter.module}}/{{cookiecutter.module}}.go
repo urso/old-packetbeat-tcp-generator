@@ -165,7 +165,7 @@ func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) ensureConne
 	conn := getConnection(private)
 	if conn == nil {
 		conn = &connection{}
-		conn.trans.init(&{{ cookiecutter.plugin_var }}.transConfig, &{{ cookiecutter.plugin_var }}.pub.onTransaction)
+		conn.trans.init(&{{ cookiecutter.plugin_var }}.transConfig, {{ cookiecutter.plugin_var }}.pub.onTransaction)
 	}
 	return conn
 }
