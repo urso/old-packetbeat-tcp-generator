@@ -17,6 +17,7 @@ import (
 type {{ cookiecutter.plugin_type }} struct {
 	ports        protos.PortsConfig
 	parserConfig parserConfig
+	transConfig  transactionConfig
 	pub          transPub
 }
 
@@ -74,17 +75,24 @@ func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) init(result
 }
 
 func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) setFromConfig(config *{{ cookiecutter.module }}Config) error {
+
+	// set module configuration
 	if err := {{ cookiecutter.plugin_var }}.ports.Set(config.Ports); err != nil {
 		return err
 	}
 
 	// set parser configuration
-	{{ cookiecutter.plugin_var }}.parserConfig.maxBytes = tcp.TCP_MAX_DATA_IN_STREAM
+	parser := &{{ cookiecutter.plugin_var }}.parserConfig
+	parser.maxBytes = tcp.TCP_MAX_DATA_IN_STREAM
+
+	// set transaction correlator configuration
+	trans := &{{ cookiecutter.plugin_var }}.transConfig
+	trans.transactionTimeout = time.Duration(config.TransactionTimeout) * time.Second
 
 	// set transaction publisher configuration
-	{{ cookiecutter.plugin_var }}.pub.sendRequest = config.SendRequest
-	{{ cookiecutter.plugin_var }}.pub.sendResponse = config.SendResponse
-	{{ cookiecutter.plugin_var }}.pub.transactionTimeout = time.Duration(config.TransactionTimeout) * time.Second
+	pub := &{{ cookiecutter.plugin_var }}.pub
+	pub.sendRequest = config.SendRequest
+	pub.sendResponse = config.SendResponse
 
 	return nil
 }
@@ -92,7 +100,7 @@ func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) setFromConf
 // ConnectionTimeout returns the per stream connection timeout.
 // Return <=0 to set default tcp module transaction timeout.
 func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) ConnectionTimeout() time.Duration {
-	return {{ cookiecutter.plugin_var }}.pub.transactionTimeout
+	return {{ cookiecutter.plugin_var }}.transConfig.transactionTimeout
 }
 
 // GetPorts returns the ports numbers packets shall be processed for.
@@ -156,9 +164,8 @@ func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) onDropConne
 func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) ensureConnection(private protos.ProtocolData) *connection {
 	conn := getConnection(private)
 	if conn == nil {
-		conn = &connection{
-			trans: transactions{onTransaction: {{ cookiecutter.plugin_var }}.pub.onTransaction},
-		}
+		conn = &connection{}
+		conn.trans.init(&{{ cookiecutter.plugin_var }}.transConfig, &{{ cookiecutter.plugin_var }}.pub.onTransaction)
 	}
 	return conn
 }

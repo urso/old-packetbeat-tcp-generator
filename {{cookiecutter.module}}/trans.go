@@ -8,15 +8,28 @@ import (
 )
 
 type transactions struct {
+	config *transactionConfig
+
 	requests  messageList
 	responses messageList
 
-	onTransaction func(requ, resp *message) error
+	onTransaction transactionHandler
 }
+
+type transactionConfig struct {
+	transactionTimeout time.Duration
+}
+
+type transactionHandler func(requ, resp *message) error
 
 // List of messages available for correlation
 type messageList struct {
 	head, tail *message
+}
+
+func (trans *transactions) init(c *transactionConfig, cb transactionHandler) {
+	trans.config = c
+	trans.onTransaction = cb
 }
 
 func (trans *transactions) onMessage(

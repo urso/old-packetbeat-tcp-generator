@@ -9,7 +9,6 @@ import (
 
 // Transaction Publisher.
 type transPub struct {
-	transactionTimeout time.Duration
 	sendRequest        bool
 	sendResponse       bool
 
