@@ -12,7 +12,7 @@ type {{ cookiecutter.module }}Config struct {
 var (
 	defaultConfig = {{ cookiecutter.module }}Config{
 		ProtocolCommon: config.ProtocolCommon{
-			TransactionTimeout: protos.DefaultTransactionTimeout,
+			TransactionTimeout: protos.DefaultTransactionExpiration,
 		},
 	}
 )

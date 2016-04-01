@@ -85,7 +85,7 @@ func ({{ cookiecutter.plugin_var }} *{{ cookiecutter.plugin_type }}) setFromConf
 
 	// set transaction correlator configuration
 	trans := &{{ cookiecutter.plugin_var }}.transConfig
-	trans.transactionTimeout = time.Duration(config.TransactionTimeout) * time.Second
+	trans.transactionTimeout = config.TransactionTimeout
 
 	// set transaction publisher configuration
 	pub := &{{ cookiecutter.plugin_var }}.pub
