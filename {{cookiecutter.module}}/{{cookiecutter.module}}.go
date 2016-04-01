@@ -3,8 +3,6 @@ package {{ cookiecutter.module }}
 import (
 	"time"
 
-	"github.com/urso/ucfg"
-
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 
@@ -48,7 +46,7 @@ func init() {
 func New(
 	testMode bool,
 	results publish.Transactions,
-	cfg *ucfg.Config,
+	cfg *common.Config,
 ) (protos.Plugin, error) {
 	p := &{{ cookiecutter.plugin_type }}{}
 	config := defaultConfig
