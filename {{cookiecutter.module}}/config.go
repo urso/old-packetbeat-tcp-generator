@@ -16,3 +16,7 @@ var (
 		},
 	}
 )
+
+func (c *{{ cookiecutter.module }}Config) Validate() error {
+	return nil
+}
